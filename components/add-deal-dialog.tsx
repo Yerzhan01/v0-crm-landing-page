@@ -19,7 +19,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react"
 import { createDeal } from "@/app/actions/deals"
 import { useRouter } from "next/navigation"
-import { useDashboardTranslation } from "@/hooks/use-dashboard-translation"
 
 interface AddDealDialogProps {
   funnels: any[]
@@ -33,7 +32,6 @@ export function AddDealDialog({ funnels, clients, users }: AddDealDialogProps) {
   const [error, setError] = useState("")
   const [selectedFunnel, setSelectedFunnel] = useState("")
   const router = useRouter()
-  const { t } = useDashboardTranslation()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -61,26 +59,26 @@ export function AddDealDialog({ funnels, clients, users }: AddDealDialogProps) {
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          {t.newDeal}
+          Новая сделка
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{t.newDeal}</DialogTitle>
-          <DialogDescription>{t.createNewDeal}</DialogDescription>
+          <DialogTitle>Новая сделка</DialogTitle>
+          <DialogDescription>Создайте новую сделку в воронке продаж</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">{t.dealTitle} *</Label>
-            <Input id="title" name="title" placeholder={t.dealTitlePlaceholder} required />
+            <Label htmlFor="title">Название сделки *</Label>
+            <Input id="title" name="title" placeholder="Продажа CRM системы" required />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="funnel_id">{t.funnel} *</Label>
+              <Label htmlFor="funnel_id">Воронка *</Label>
               <Select name="funnel_id" value={selectedFunnel} onValueChange={setSelectedFunnel} required>
                 <SelectTrigger>
-                  <SelectValue placeholder={t.selectFunnel} />
+                  <SelectValue placeholder="Выберите воронку" />
                 </SelectTrigger>
                 <SelectContent>
                   {funnels.map((funnel) => (
@@ -93,10 +91,10 @@ export function AddDealDialog({ funnels, clients, users }: AddDealDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="stage_id">{t.stage} *</Label>
+              <Label htmlFor="stage_id">Этап *</Label>
               <Select name="stage_id" required disabled={!selectedFunnel}>
                 <SelectTrigger>
-                  <SelectValue placeholder={t.selectStage} />
+                  <SelectValue placeholder="Выберите этап" />
                 </SelectTrigger>
                 <SelectContent>
                   {stages.map((stage: any) => (
@@ -110,10 +108,10 @@ export function AddDealDialog({ funnels, clients, users }: AddDealDialogProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="client_id">{t.client}</Label>
+            <Label htmlFor="client_id">Клиент</Label>
             <Select name="client_id">
               <SelectTrigger>
-                <SelectValue placeholder={t.selectClient} />
+                <SelectValue placeholder="Выберите клиента" />
               </SelectTrigger>
               <SelectContent>
                 {clients.map((client) => (
@@ -127,33 +125,33 @@ export function AddDealDialog({ funnels, clients, users }: AddDealDialogProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">{t.amount} (₸)</Label>
+              <Label htmlFor="amount">Сумма (₸)</Label>
               <Input id="amount" name="amount" type="number" placeholder="100000" min="0" step="0.01" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="probability">{t.probability} (%)</Label>
+              <Label htmlFor="probability">Вероятность (%)</Label>
               <Input id="probability" name="probability" type="number" defaultValue="50" min="0" max="100" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expected_close_date">{t.expectedCloseDate}</Label>
+            <Label htmlFor="expected_close_date">Ожидаемая дата закрытия</Label>
             <Input id="expected_close_date" name="expected_close_date" type="date" />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{t.description}</Label>
-            <Textarea id="description" name="description" placeholder={t.dealDetails} rows={3} />
+            <Label htmlFor="description">Описание</Label>
+            <Textarea id="description" name="description" placeholder="Детали сделки" rows={3} />
           </div>
 
           {error && <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>}
           <div className="flex justify-end gap-3">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              {t.cancel}
+              Отмена
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? t.creating : t.create}
+              {loading ? "Создание..." : "Создать"}
             </Button>
           </div>
         </form>

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useMobile } from "@/hooks/use-mobile"
 
 interface Appointment {
   id: string
@@ -31,7 +30,9 @@ interface CalendarViewProps {
 
 export function CalendarView({ appointments, staff }: CalendarViewProps) {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const isMobile = useMobile()
+
+  // Generate time slots from 9:00 to 21:00
+  const timeSlots = Array.from({ length: 13 }, (_, i) => i + 9)
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" })
@@ -48,11 +49,13 @@ export function CalendarView({ appointments, staff }: CalendarViewProps) {
     return date.toDateString() === today.toDateString()
   }
 
+  // Filter appointments for selected date
   const dayAppointments = appointments.filter((apt) => {
     const aptDate = new Date(apt.start_time)
     return aptDate.toDateString() === selectedDate.toDateString()
   })
 
+  // Get appointments for specific staff and time
   const getAppointmentForSlot = (staffId: string, hour: number) => {
     return dayAppointments.find((apt) => {
       if (apt.staff?.id !== staffId) return false
@@ -65,10 +68,12 @@ export function CalendarView({ appointments, staff }: CalendarViewProps) {
     })
   }
 
+  // Calculate appointment height based on duration
   const getAppointmentHeight = (duration: number) => {
     return (duration / 60) * 100 // 100% = 1 hour
   }
 
+  // Calculate appointment position within the hour
   const getAppointmentPosition = (startTime: string) => {
     const date = new Date(startTime)
     const minutes = date.getMinutes()
@@ -92,98 +97,6 @@ export function CalendarView({ appointments, staff }: CalendarViewProps) {
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-  }
-
-  if (isMobile) {
-    return (
-      <div className="space-y-4">
-        {/* Date navigation */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => changeDate(-1)}>
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button variant={isToday(selectedDate) ? "default" : "outline"} onClick={() => setSelectedDate(new Date())}>
-              Сегодня
-            </Button>
-            <Button variant="outline" size="icon" onClick={() => changeDate(1)}>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        <h2 className="text-lg font-semibold">{formatDate(selectedDate)}</h2>
-
-        {/* Mobile list view */}
-        <div className="space-y-3">
-          {dayAppointments.length === 0 ? (
-            <Card className="p-8 text-center">
-              <p className="text-muted-foreground">Нет записей на этот день</p>
-            </Card>
-          ) : (
-            dayAppointments
-              .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
-              .map((appointment) => (
-                <Card key={appointment.id} className={cn("p-4", getStatusColor(appointment.status))}>
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <div className="font-semibold">{appointment.title}</div>
-                        <div className="text-sm mt-1">
-                          {new Date(appointment.start_time).toLocaleTimeString("ru-RU", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}{" "}
-                          ({appointment.duration_minutes} мин)
-                        </div>
-                      </div>
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="text-xs">
-                          {appointment.staff ? getStaffInitials(appointment.staff.full_name) : "?"}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-                    {appointment.clients && (
-                      <div className="text-sm">
-                        <div className="font-medium">{appointment.clients.full_name}</div>
-                        {appointment.clients.phone && (
-                          <div className="text-muted-foreground">{appointment.clients.phone}</div>
-                        )}
-                      </div>
-                    )}
-                    {appointment.services && (
-                      <div className="text-sm text-muted-foreground">{appointment.services.name}</div>
-                    )}
-                  </div>
-                </Card>
-              ))
-          )}
-        </div>
-
-        {/* Legend */}
-        <div className="space-y-2 text-sm">
-          <div className="font-medium">Статусы:</div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-blue-100 border-2 border-blue-300" />
-              <span className="text-xs">Запланирована</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-green-100 border-2 border-green-300" />
-              <span className="text-xs">Подтверждена</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-gray-100 border-2 border-gray-300" />
-              <span className="text-xs">Завершена</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-red-100 border-2 border-red-300" />
-              <span className="text-xs">Отменена</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -231,7 +144,7 @@ export function CalendarView({ appointments, staff }: CalendarViewProps) {
 
               {/* Time slots */}
               <div className="relative">
-                {Array.from({ length: 13 }, (_, i) => i + 9).map((hour) => (
+                {timeSlots.map((hour) => (
                   <div
                     key={hour}
                     className="grid border-b last:border-b-0"

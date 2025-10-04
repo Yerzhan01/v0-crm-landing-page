@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Copy, Users, DollarSign, TrendingUp, Gift } from "lucide-react"
-import { useDashboardTranslation } from "@/hooks/use-dashboard-translation"
 
 interface SettingsContentProps {
   user: any
@@ -40,8 +39,6 @@ export default function SettingsContent({
   pendingEarnings,
   referralUrl,
 }: SettingsContentProps) {
-  const { t } = useDashboardTranslation()
-
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralUrl)
   }
@@ -49,39 +46,39 @@ export default function SettingsContent({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">{t.settings}</h1>
-        <p className="text-muted-foreground mt-2">{t.manageSettings}</p>
+        <h1 className="text-3xl font-bold">Настройки</h1>
+        <p className="text-muted-foreground mt-2">Управляйте настройками вашего аккаунта и ArzanCRM</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="profile">{t.profile}</TabsTrigger>
-          <TabsTrigger value="company">{t.company}</TabsTrigger>
-          <TabsTrigger value="referral">{t.referralProgram}</TabsTrigger>
-          <TabsTrigger value="notifications">{t.notifications}</TabsTrigger>
-          <TabsTrigger value="security">{t.security}</TabsTrigger>
+          <TabsTrigger value="profile">Профиль</TabsTrigger>
+          <TabsTrigger value="company">Компания</TabsTrigger>
+          <TabsTrigger value="referral">Реферальная программа</TabsTrigger>
+          <TabsTrigger value="notifications">Уведомления</TabsTrigger>
+          <TabsTrigger value="security">Безопасность</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t.personalInfo}</CardTitle>
-              <CardDescription>{t.updateProfile}</CardDescription>
+              <CardTitle>Личная информация</CardTitle>
+              <CardDescription>Обновите информацию вашего профиля</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">{t.fullName}</Label>
+                <Label htmlFor="fullName">Полное имя</Label>
                 <Input id="fullName" defaultValue={profile?.full_name || ""} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">{t.email}</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" defaultValue={user?.email || ""} disabled />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">{t.phone}</Label>
+                <Label htmlFor="phone">Телефон</Label>
                 <Input id="phone" type="tel" defaultValue={profile?.phone || ""} />
               </div>
-              <Button>{t.saveChanges}</Button>
+              <Button>Сохранить изменения</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -89,28 +86,28 @@ export default function SettingsContent({
         <TabsContent value="company" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t.companyInfo}</CardTitle>
-              <CardDescription>{t.manageCompany}</CardDescription>
+              <CardTitle>Информация о компании</CardTitle>
+              <CardDescription>Управляйте настройками вашей организации</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="companyName">{t.companyName}</Label>
+                <Label htmlFor="companyName">Название компании</Label>
                 <Input id="companyName" defaultValue={profile?.tenants?.name || ""} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="timezone">{t.timezone}</Label>
+                <Label htmlFor="timezone">Часовой пояс</Label>
                 <Select defaultValue="Asia/Almaty">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Asia/Almaty">{t.almaty}</SelectItem>
-                    <SelectItem value="Asia/Aqtobe">{t.aqtobe}</SelectItem>
-                    <SelectItem value="Europe/Moscow">{t.moscow}</SelectItem>
+                    <SelectItem value="Asia/Almaty">Алматы (GMT+6)</SelectItem>
+                    <SelectItem value="Asia/Aqtobe">Актобе (GMT+5)</SelectItem>
+                    <SelectItem value="Europe/Moscow">Москва (GMT+3)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <Button>{t.saveChanges}</Button>
+              <Button>Сохранить изменения</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -119,53 +116,53 @@ export default function SettingsContent({
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t.clicks}</CardTitle>
+                <CardTitle className="text-sm font-medium">Переходы</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalClicks}</div>
-                <p className="text-xs text-muted-foreground">{t.totalClicks}</p>
+                <p className="text-xs text-muted-foreground">Всего кликов по ссылке</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t.registrations}</CardTitle>
+                <CardTitle className="text-sm font-medium">Регистрации</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalRegistrations}</div>
-                <p className="text-xs text-muted-foreground">{t.registeredUsers}</p>
+                <p className="text-xs text-muted-foreground">Зарегистрировались</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t.paid}</CardTitle>
+                <CardTitle className="text-sm font-medium">Оплаты</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalPaid}</div>
-                <p className="text-xs text-muted-foreground">{t.totalPaid}</p>
+                <p className="text-xs text-muted-foreground">Оплатили подписку</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t.earned}</CardTitle>
+                <CardTitle className="text-sm font-medium">Заработано</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalEarned.toLocaleString()}₸</div>
-                <p className="text-xs text-muted-foreground">{t.totalEarned}</p>
+                <p className="text-xs text-muted-foreground">Всего комиссии</p>
               </CardContent>
             </Card>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>{t.yourReferralLink}</CardTitle>
-              <CardDescription>{t.shareReferralLink}</CardDescription>
+              <CardTitle>Ваша реферальная ссылка</CardTitle>
+              <CardDescription>Делитесь этой ссылкой и получайте 10% от каждой продажи</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-2">
@@ -178,21 +175,23 @@ export default function SettingsContent({
               <div className="rounded-lg bg-muted p-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <Gift className="h-5 w-5 text-primary" />
-                  <span className="font-semibold">{t.howItWorks}</span>
+                  <span className="font-semibold">Как это работает?</span>
                 </div>
                 <ul className="text-sm text-muted-foreground space-y-1 ml-7">
-                  <li>• {t.shareYourLink}</li>
-                  <li>• {t.referralRegisters}</li>
-                  <li>• {t.payoutsMonthly}</li>
+                  <li>• Поделитесь своей реферальной ссылкой</li>
+                  <li>• Когда кто-то регистрируется по вашей ссылке, вы получаете 10% от их платежей</li>
+                  <li>• Выплаты производятся ежемесячно при достижении минимальной суммы 10,000₸</li>
                 </ul>
               </div>
 
               {pendingEarnings > 0 && (
                 <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                   <p className="text-sm">
-                    <span className="font-semibold">{t.pendingEarnings}:</span> {pendingEarnings.toLocaleString()}₸
+                    <span className="font-semibold">Ожидает выплаты:</span> {pendingEarnings.toLocaleString()}₸
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">{t.payoutAfterConfirmation}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Будет выплачено после подтверждения оплат рефералами
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -201,17 +200,17 @@ export default function SettingsContent({
           {referralStats && referralStats.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>{t.yourReferrals}</CardTitle>
-                <CardDescription>{t.referralsList}</CardDescription>
+                <CardTitle>Ваши рефералы</CardTitle>
+                <CardDescription>Список пользователей, зарегистрированных по вашей ссылке</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{t.email}</TableHead>
-                      <TableHead>{t.registrationDate}</TableHead>
-                      <TableHead>{t.status}</TableHead>
-                      <TableHead className="text-right">{t.commission}</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Дата регистрации</TableHead>
+                      <TableHead>Статус</TableHead>
+                      <TableHead className="text-right">Комиссия</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -221,7 +220,7 @@ export default function SettingsContent({
                         <TableCell>{new Date(stat.created_at).toLocaleDateString("ru-RU")}</TableCell>
                         <TableCell>
                           <Badge variant={stat.status === "paid" ? "default" : "secondary"}>
-                            {stat.status === "paid" ? t.paid : t.registered}
+                            {stat.status === "paid" ? "Оплачено" : "Зарегистрирован"}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">{(stat.commission_amount || 0).toLocaleString()}₸</TableCell>
@@ -236,16 +235,16 @@ export default function SettingsContent({
           {referralPayouts && referralPayouts.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>{t.payoutHistory}</CardTitle>
-                <CardDescription>{t.last10Payouts}</CardDescription>
+                <CardTitle>История выплат</CardTitle>
+                <CardDescription>Последние 10 выплат реферальных комиссий</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{t.date}</TableHead>
-                      <TableHead>{t.amount}</TableHead>
-                      <TableHead>{t.status}</TableHead>
+                      <TableHead>Дата</TableHead>
+                      <TableHead>Сумма</TableHead>
+                      <TableHead>Статус</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -268,38 +267,38 @@ export default function SettingsContent({
         <TabsContent value="notifications" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t.notificationsSettings}</CardTitle>
-              <CardDescription>{t.manageNotifications}</CardDescription>
+              <CardTitle>Настройки уведомлений</CardTitle>
+              <CardDescription>Управляйте тем, как вы получаете уведомления</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>{t.emailNotifications}</Label>
-                  <p className="text-sm text-muted-foreground">{t.receiveEmailNotifications}</p>
+                  <Label>Email уведомления</Label>
+                  <p className="text-sm text-muted-foreground">Получать уведомления на email</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>{t.pushNotifications}</Label>
-                  <p className="text-sm text-muted-foreground">{t.receivePushNotifications}</p>
+                  <Label>Push уведомления</Label>
+                  <p className="text-sm text-muted-foreground">Получать push уведомления в браузере</p>
                 </div>
                 <Switch />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>{t.newCustomers}</Label>
-                  <p className="text-sm text-muted-foreground">{t.notifyNewCustomers}</p>
+                  <Label>Новые клиенты</Label>
+                  <p className="text-sm text-muted-foreground">Уведомлять о новых клиентах</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>{t.newDeals}</Label>
-                  <p className="text-sm text-muted-foreground">{t.notifyNewDeals}</p>
+                  <Label>Новые сделки</Label>
+                  <p className="text-sm text-muted-foreground">Уведомлять о новых сделках</p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -310,28 +309,28 @@ export default function SettingsContent({
         <TabsContent value="security" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t.securitySettings}</CardTitle>
-              <CardDescription>{t.manageAccountSecurity}</CardDescription>
+              <CardTitle>Безопасность</CardTitle>
+              <CardDescription>Управляйте настройками безопасности вашего аккаунта</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">{t.currentPassword}</Label>
+                <Label htmlFor="currentPassword">Текущий пароль</Label>
                 <Input id="currentPassword" type="password" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="newPassword">{t.newPassword}</Label>
+                <Label htmlFor="newPassword">Новый пароль</Label>
                 <Input id="newPassword" type="password" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">{t.confirmPassword}</Label>
+                <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
                 <Input id="confirmPassword" type="password" />
               </div>
-              <Button>{t.changePassword}</Button>
+              <Button>Изменить пароль</Button>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>{t.twoFactorAuth}</Label>
-                  <p className="text-sm text-muted-foreground">{t.addSecurityLayer}</p>
+                  <Label>Двухфакторная аутентификация</Label>
+                  <p className="text-sm text-muted-foreground">Добавьте дополнительный уровень безопасности</p>
                 </div>
                 <Switch />
               </div>

@@ -6,7 +6,6 @@ import { BusinessTypeCard } from "@/components/business-type-card"
 import { BenefitCard } from "@/components/benefit-card"
 import { TestimonialCard } from "@/components/testimonial-card"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { ContactSection } from "@/components/contact-section"
 import { getTranslation, type Language } from "@/lib/translations"
 import { Brain, Eye, Bell, DollarSign, MapPin, Zap } from "lucide-react"
 import Link from "next/link"
@@ -197,8 +196,6 @@ export default function Home() {
           <TestimonialCard quote={t.testimonial3} text={t.testimonial3Text} author={t.testimonial3Author} />
         </div>
       </section>
-
-      <ContactSection lang={lang} />
 
       {/* Final CTA Section */}
       <section className="bg-primary text-primary-foreground py-20 md:py-32">

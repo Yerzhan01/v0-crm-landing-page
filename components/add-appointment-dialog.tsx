@@ -19,7 +19,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react"
 import { createAppointment } from "@/app/actions/appointments"
 import { useRouter } from "next/navigation"
-import { useDashboardTranslation } from "@/hooks/use-dashboard-translation"
 
 interface AddAppointmentDialogProps {
   clients: any[]
@@ -33,7 +32,6 @@ export function AddAppointmentDialog({ clients, services, staff }: AddAppointmen
   const [error, setError] = useState("")
   const [selectedService, setSelectedService] = useState("")
   const router = useRouter()
-  const { t } = useDashboardTranslation()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -60,21 +58,21 @@ export function AddAppointmentDialog({ clients, services, staff }: AddAppointmen
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          {t.newAppointment}
+          Новая запись
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{t.newAppointment}</DialogTitle>
-          <DialogDescription>{t.createNewAppointment}</DialogDescription>
+          <DialogTitle>Новая запись</DialogTitle>
+          <DialogDescription>Создайте новую запись в календаре</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="client_id">{t.client} *</Label>
+              <Label htmlFor="client_id">Клиент *</Label>
               <Select name="client_id" required>
                 <SelectTrigger>
-                  <SelectValue placeholder={t.selectClient} />
+                  <SelectValue placeholder="Выберите клиента" />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map((client) => (
@@ -86,10 +84,10 @@ export function AddAppointmentDialog({ clients, services, staff }: AddAppointmen
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="service_id">{t.appointmentService}</Label>
+              <Label htmlFor="service_id">Услуга</Label>
               <Select name="service_id" value={selectedService} onValueChange={setSelectedService}>
                 <SelectTrigger>
-                  <SelectValue placeholder={t.selectService} />
+                  <SelectValue placeholder="Выберите услугу" />
                 </SelectTrigger>
                 <SelectContent>
                   {services.map((service) => (
@@ -103,14 +101,16 @@ export function AddAppointmentDialog({ clients, services, staff }: AddAppointmen
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="staff_id">{t.staff}</Label>
+            <Label htmlFor="staff_id">Мастер</Label>
             <Select name="staff_id">
               <SelectTrigger>
-                <SelectValue placeholder={t.selectStaff} />
+                <SelectValue placeholder="Выберите мастера" />
               </SelectTrigger>
               <SelectContent>
                 {staff.length === 0 ? (
-                  <div className="p-2 text-sm text-muted-foreground">{t.noStaffAvailable}</div>
+                  <div className="p-2 text-sm text-muted-foreground">
+                    Нет доступных мастеров. Добавьте их в настройках календаря.
+                  </div>
                 ) : (
                   staff.map((member) => (
                     <SelectItem key={member.id} value={member.id}>
@@ -123,11 +123,11 @@ export function AddAppointmentDialog({ clients, services, staff }: AddAppointmen
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">{t.title} *</Label>
+            <Label htmlFor="title">Название *</Label>
             <Input
               id="title"
               name="title"
-              placeholder={t.appointmentTitle}
+              placeholder="Название записи"
               defaultValue={selectedServiceData?.name || ""}
               required
             />
@@ -135,13 +135,11 @@ export function AddAppointmentDialog({ clients, services, staff }: AddAppointmen
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="start_time">{t.dateTime} *</Label>
+              <Label htmlFor="start_time">Дата и время *</Label>
               <Input id="start_time" name="start_time" type="datetime-local" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="duration_minutes">
-                {t.duration} ({t.minutes})
-              </Label>
+              <Label htmlFor="duration_minutes">Длительность (мин)</Label>
               <Input
                 id="duration_minutes"
                 name="duration_minutes"
@@ -154,17 +152,17 @@ export function AddAppointmentDialog({ clients, services, staff }: AddAppointmen
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{t.description}</Label>
-            <Textarea id="description" name="description" placeholder={t.additionalInfo} rows={3} />
+            <Label htmlFor="description">Описание</Label>
+            <Textarea id="description" name="description" placeholder="Дополнительная информация" rows={3} />
           </div>
 
           {error && <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>}
           <div className="flex justify-end gap-3">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              {t.cancel}
+              Отмена
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? t.creating : t.create}
+              {loading ? "Создание..." : "Создать"}
             </Button>
           </div>
         </form>

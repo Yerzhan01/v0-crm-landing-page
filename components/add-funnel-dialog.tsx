@@ -19,7 +19,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Plus } from "lucide-react"
 import { createFunnel } from "@/app/actions/funnels"
 import { useRouter } from "next/navigation"
-import { useDashboardTranslation } from "@/hooks/use-dashboard-translation"
 
 export function AddFunnelDialog() {
   const [open, setOpen] = useState(false)
@@ -27,7 +26,6 @@ export function AddFunnelDialog() {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const router = useRouter()
-  const { t } = useDashboardTranslation()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,11 +40,11 @@ export function AddFunnelDialog() {
         setDescription("")
         router.refresh()
       } else {
-        alert(result.error || t.error)
+        alert(result.error || "Ошибка при создании воронки")
       }
     } catch (error) {
       console.error("Error creating funnel:", error)
-      alert(t.error)
+      alert("Ошибка при создании воронки")
     } finally {
       setLoading(false)
     }
@@ -57,31 +55,31 @@ export function AddFunnelDialog() {
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full justify-start h-auto py-4 bg-transparent" size="lg">
           <Plus className="h-4 w-4 mr-2" />
-          {t.addFunnel}
+          Добавить воронку
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>{t.createFunnel}</DialogTitle>
-            <DialogDescription>{t.addNewFunnel}</DialogDescription>
+            <DialogTitle>Создать новую воронку</DialogTitle>
+            <DialogDescription>Добавьте новую воронку продаж для управления сделками</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">{t.funnelName} *</Label>
+              <Label htmlFor="name">Название воронки *</Label>
               <Input
                 id="name"
-                placeholder={t.funnelNamePlaceholder}
+                placeholder="Например: Продажи через Instagram"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="description">{t.description}</Label>
+              <Label htmlFor="description">Описание</Label>
               <Textarea
                 id="description"
-                placeholder={t.descriptionPlaceholder}
+                placeholder="Краткое описание воронки..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
@@ -90,10 +88,10 @@ export function AddFunnelDialog() {
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
-              {t.cancel}
+              Отмена
             </Button>
             <Button type="submit" disabled={loading || !name.trim()}>
-              {loading ? t.creating : t.createFunnel}
+              {loading ? "Создание..." : "Создать воронку"}
             </Button>
           </DialogFooter>
         </form>

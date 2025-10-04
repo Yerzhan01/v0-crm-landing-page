@@ -15,39 +15,36 @@ import {
   Zap,
   Send,
 } from "lucide-react"
-import { useDashboardTranslation } from "@/hooks/use-dashboard-translation"
 
 interface AppSidebarProps {
   profile: any
-  onNavigate?: () => void
 }
 
-export function AppSidebar({ profile, onNavigate }: AppSidebarProps) {
+export function AppSidebar({ profile }: AppSidebarProps) {
   const pathname = usePathname()
-  const { t } = useDashboardTranslation()
 
   const navigation = [
-    { name: t.sidebar.dashboard, href: "/dashboard", icon: LayoutDashboard },
-    { name: t.sidebar.clients, href: "/dashboard/clients", icon: Users },
-    { name: t.sidebar.funnels, href: "/dashboard/funnels", icon: FolderKanban },
-    { name: t.sidebar.calendar, href: "/dashboard/calendar", icon: Calendar },
-    { name: t.sidebar.messages, href: "/dashboard/messages", icon: MessageSquare },
-    { name: t.sidebar.channels, href: "/dashboard/channels", icon: Send },
-    { name: t.sidebar.automation, href: "/dashboard/automation", icon: Zap },
-    { name: t.sidebar.analytics, href: "/dashboard/analytics", icon: TrendingUp },
-    { name: t.sidebar.settings, href: "/dashboard/settings", icon: Settings },
+    { name: "Главная", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Клиенты", href: "/dashboard/clients", icon: Users },
+    { name: "Воронки", href: "/dashboard/funnels", icon: FolderKanban },
+    { name: "Календарь", href: "/dashboard/calendar", icon: Calendar },
+    { name: "Сообщения", href: "/dashboard/messages", icon: MessageSquare },
+    { name: "Каналы", href: "/dashboard/channels", icon: Send },
+    { name: "Автоматизация", href: "/dashboard/automation", icon: Zap },
+    { name: "Аналитика", href: "/dashboard/analytics", icon: TrendingUp },
+    { name: "Настройки", href: "/dashboard/settings", icon: Settings },
   ]
 
   return (
-    <aside className="w-64 bg-card border-r flex flex-col h-full">
-      <div className="p-4 md:p-6 border-b">
-        <Link href="/dashboard" className="flex items-center gap-2" onClick={onNavigate}>
+    <aside className="w-64 bg-card border-r flex flex-col">
+      <div className="p-6 border-b">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <Building2 className="h-6 w-6" />
-          <span className="font-bold text-lg">{t.crmSystem}</span>
+          <span className="font-bold text-lg">ArzanCRM</span>
         </Link>
       </div>
 
-      <nav className="flex-1 p-3 md:p-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-1">
         {navigation.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href
@@ -55,35 +52,32 @@ export function AppSidebar({ profile, onNavigate }: AppSidebarProps) {
             <Link
               key={item.name}
               href={item.href}
-              onClick={onNavigate}
               className={cn(
-                "flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg text-sm font-medium transition-colors touch-manipulation",
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                 isActive
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted",
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
-              <Icon className="h-5 w-5 md:h-4 md:w-4 flex-shrink-0" />
+              <Icon className="h-4 w-4" />
               {item.name}
             </Link>
           )
         })}
       </nav>
 
-      <div className="p-3 md:p-4 border-t">
+      <div className="p-4 border-t">
         <div className="text-xs text-muted-foreground">
-          <div className="font-medium text-foreground mb-1 truncate">{profile?.tenants?.name}</div>
-          <div className="truncate">
-            {t.plan}:{" "}
-            {profile?.tenants?.plan === "starter"
-              ? t.starterPlan
-              : profile?.tenants?.plan === "professional"
-                ? t.professionalPlan
-                : t.enterprisePlan}
-          </div>
+          <div className="font-medium text-foreground mb-1">{profile?.tenants?.name}</div>
           <div>
-            {t.status}: {profile?.tenants?.status === "trial" ? t.trialStatus : t.activeStatus}
+            План:{" "}
+            {profile?.tenants?.plan === "starter"
+              ? "Стартовый"
+              : profile?.tenants?.plan === "professional"
+                ? "Профессиональный"
+                : "Корпоративный"}
           </div>
+          <div>Статус: {profile?.tenants?.status === "trial" ? "Пробный период" : "Активен"}</div>
         </div>
       </div>
     </aside>
