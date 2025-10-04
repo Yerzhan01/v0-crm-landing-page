@@ -13,8 +13,7 @@ export default async function ReferralsPage() {
     redirect("/login")
   }
 
-  // Get user profile with tenant info
-  const { data: profile } = await supabase.from("profiles").select("*, tenants(*)").eq("id", user.id).single()
+  const { data: profile } = await supabase.from("user_profiles").select("*, tenants(*)").eq("id", user.id).single()
 
   if (!profile) {
     redirect("/login")
@@ -23,11 +22,10 @@ export default async function ReferralsPage() {
   // Get referral code for this user
   const { data: referralCode } = await supabase.from("referral_codes").select("*").eq("user_id", user.id).single()
 
-  // Get referrals (users who signed up with this user's code)
   const { data: referrals } = await supabase
-    .from("profiles")
-    .select("id, full_name, email, created_at, tenants(status)")
-    .eq("referred_by", user.id)
+    .from("referral_conversions")
+    .select("*, user_profiles!referral_conversions_referred_user_id_fkey(id, full_name, tenant_id)")
+    .eq("referrer_id", user.id)
     .order("created_at", { ascending: false })
 
   return <ReferralsContent profile={profile} referralCode={referralCode} referrals={referrals || []} />

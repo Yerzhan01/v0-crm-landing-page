@@ -30,7 +30,7 @@ export function ReferralsContent({ profile, referralCode, referrals }: Referrals
     }
   }
 
-  const activeReferrals = referrals.filter((r) => r.tenants?.status === "active").length
+  const activeReferrals = referrals.filter((r) => r.status === "paid").length
 
   return (
     <div className="space-y-6">
@@ -66,7 +66,7 @@ export function ReferralsContent({ profile, referralCode, referrals }: Referrals
             <UserPlus className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">10%</div>
+            <div className="text-2xl font-bold">{referralCode?.commission_rate || 10}%</div>
           </CardContent>
         </Card>
       </div>
@@ -121,14 +121,15 @@ export function ReferralsContent({ profile, referralCode, referrals }: Referrals
               {referrals.map((referral) => (
                 <div key={referral.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="space-y-1">
-                    <p className="font-medium">{referral.full_name}</p>
-                    <p className="text-sm text-muted-foreground">{referral.email}</p>
+                    <p className="font-medium">{referral.user_profiles?.full_name || referral.referred_email}</p>
+                    <p className="text-sm text-muted-foreground">{referral.referred_email}</p>
                     <p className="text-xs text-muted-foreground">
-                      {t.referralDate}: {new Date(referral.created_at).toLocaleDateString("ru-RU")}
+                      {t.referralDate}:{" "}
+                      {new Date(referral.registered_at || referral.created_at).toLocaleDateString("ru-RU")}
                     </p>
                   </div>
-                  <Badge variant={referral.tenants?.status === "active" ? "default" : "secondary"}>
-                    {referral.tenants?.status === "active" ? t.referralActive : t.referralInactive}
+                  <Badge variant={referral.status === "paid" ? "default" : "secondary"}>
+                    {referral.status === "paid" ? t.referralActive : t.referralInactive}
                   </Badge>
                 </div>
               ))}
