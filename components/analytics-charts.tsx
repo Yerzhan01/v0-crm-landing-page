@@ -19,6 +19,7 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { useDashboardTranslation } from "@/hooks/use-dashboard-translation"
+import { EmptyState } from "@/components/empty-state"
 
 // Типы для данных
 interface SalesDataItem {
@@ -51,26 +52,7 @@ interface AnalyticsChartsProps {
 export function AnalyticsCharts({ salesData: propsSalesData, overviewStats }: AnalyticsChartsProps) {
   const { t, lang } = useDashboardTranslation()
 
-  // Мемоизация данных для графиков
-  const salesData = useMemo<SalesDataItem[]>(() => {
-    if (propsSalesData) return propsSalesData
-
-    // Mock данные (только для разработки)
-    const months = {
-      ru: ["Янв", "Фев", "Мар", "Апр", "Май", "Июн"],
-      kk: ["Қаң", "Ақп", "Нау", "Сәу", "Мам", "Мау"],
-    }
-
-    return [
-      { month: months[lang][0], sales: 4000, clients: 24 },
-      { month: months[lang][1], sales: 3000, clients: 18 },
-      { month: months[lang][2], sales: 5000, clients: 32 },
-      { month: months[lang][3], sales: 4500, clients: 28 },
-      { month: months[lang][4], sales: 6000, clients: 38 },
-      { month: months[lang][5], sales: 5500, clients: 35 },
-    ]
-  }, [propsSalesData, lang])
-
+  const salesData = propsSalesData
   const funnelData = useMemo<ChartDataItem[]>(
     () => [
       { name: t.newLeads, value: 400, color: "#3b82f6" },
@@ -78,7 +60,7 @@ export function AnalyticsCharts({ salesData: propsSalesData, overviewStats }: An
       { name: t.proposal, value: 200, color: "#ec4899" },
       { name: t.closed, value: 100, color: "#10b981" },
     ],
-    [t]
+    [t],
   )
 
   const sourceData = useMemo<ChartDataItem[]>(
@@ -88,19 +70,22 @@ export function AnalyticsCharts({ salesData: propsSalesData, overviewStats }: An
       { name: t.advertising, value: 15, color: "#f59e0b" },
       { name: t.referrals, value: 10, color: "#8b5cf6" },
     ],
-    [t]
+    [t],
   )
 
-  // Mock данные для статистики
-  const stats = overviewStats ?? {
-    totalRevenue: 27500,
-    revenueChange: 20.1,
-    newClients: 175,
-    clientsChange: 15,
-    conversion: 25,
-    conversionChange: 5,
-    averageCheck: 157,
-    averageCheckChange: 2.5,
+  const stats = overviewStats
+
+  if (!propsSalesData || propsSalesData.length === 0) {
+    return (
+      <EmptyState
+        title={t.noData || "Нет данных"}
+        description={t.noDataDescription || "Данные аналитики пока недоступны"}
+      />
+    )
+  }
+
+  if (!overviewStats) {
+    return <EmptyState title={t.loading || "Загрузка..."} description={t.loadingStats || "Загружаем статистику..."} />
   }
 
   return (
@@ -270,7 +255,7 @@ interface StatCardProps {
 
 function StatCard({ title, value, change, changeLabel }: StatCardProps) {
   const isPositive = change >= 0
-  
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -278,8 +263,9 @@ function StatCard({ title, value, change, changeLabel }: StatCardProps) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        <p className={`text-xs ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-          {isPositive ? '+' : ''}{change}% {changeLabel}
+        <p className={`text-xs ${isPositive ? "text-green-600" : "text-red-600"}`}>
+          {isPositive ? "+" : ""}
+          {change}% {changeLabel}
         </p>
       </CardContent>
     </Card>

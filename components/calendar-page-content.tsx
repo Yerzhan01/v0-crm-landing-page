@@ -18,7 +18,7 @@ interface CalendarPageContentProps {
 }
 
 export function CalendarPageContent({ appointments, clients, services, staff }: CalendarPageContentProps) {
-  const { t } = useDashboardTranslation()
+  const { t, locale } = useDashboardTranslation()
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: any; label: string }> = {
@@ -32,10 +32,11 @@ export function CalendarPageContent({ appointments, clients, services, staff }: 
   }
 
   const formatDateTime = (dateString: string) => {
+    if (!dateString) return { date: "", time: "" }
     const date = new Date(dateString)
     return {
-      date: date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" }),
-      time: date.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }),
+      date: date.toLocaleDateString(locale, { day: "numeric", month: "long" }),
+      time: date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }),
     }
   }
 
@@ -130,7 +131,7 @@ export function CalendarPageContent({ appointments, clients, services, staff }: 
                       <div className="flex-shrink-0 text-center">
                         <div className="text-2xl font-bold">{new Date(appointment.start_time).getDate()}</div>
                         <div className="text-xs text-muted-foreground uppercase">
-                          {new Date(appointment.start_time).toLocaleDateString("ru-RU", { month: "short" })}
+                          {new Date(appointment.start_time).toLocaleDateString(locale, { month: "short" })}
                         </div>
                       </div>
 

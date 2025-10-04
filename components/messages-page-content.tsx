@@ -12,7 +12,7 @@ interface MessagesPageContentProps {
 }
 
 export function MessagesPageContent({ conversations }: MessagesPageContentProps) {
-  const { t } = useDashboardTranslation()
+  const { t, locale } = useDashboardTranslation()
 
   const totalUnread = conversations?.reduce((sum, conv) => sum + (conv.unread_count || 0), 0) || 0
 
@@ -29,7 +29,7 @@ export function MessagesPageContent({ conversations }: MessagesPageContentProps)
     if (diffMins < 60) return `${diffMins} ${t.messages.minAgo}`
     if (diffHours < 24) return `${diffHours} ${t.messages.hourAgo}`
     if (diffDays < 7) return `${diffDays} ${t.messages.dayAgo}`
-    return date.toLocaleDateString("ru-RU", { day: "numeric", month: "short" })
+    return date.toLocaleDateString(locale, { day: "numeric", month: "short" })
   }
 
   return (

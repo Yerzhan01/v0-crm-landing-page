@@ -14,24 +14,30 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | null>(null)
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Language>(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("dashboardLang") as Language) || "ru"
-    }
-    return "ru"
-  })
+  const [lang, setLang] = useState<Language>("ru")
 
   useEffect(() => {
-    localStorage.setItem("dashboardLang", lang)
+    try {
+      const stored = localStorage.getItem("dashboardLang") as Language
+      if (stored && (stored === "ru" || stored === "kk")) {
+        setLang(stored)
+      }
+    } catch (error) {
+      console.error("Failed to load language preference:", error)
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("dashboardLang", lang)
+    } catch (error) {
+      console.error("Failed to save language preference:", error)
+    }
   }, [lang])
 
   const t = getTranslation(lang)
 
-  return (
-    <LanguageContext.Provider value={{ lang, changeLang: setLang, t }}>
-      {children}
-    </LanguageContext.Provider>
-  )
+  return <LanguageContext.Provider value={{ lang, changeLang: setLang, t }}>{children}</LanguageContext.Provider>
 }
 
 export function useDashboardTranslation() {

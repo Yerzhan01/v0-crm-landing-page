@@ -13,15 +13,45 @@ export default async function SettingsPage() {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("user_profiles").select("*, tenants(*)").eq("id", user.id).single()
-  const { data: referralCode } = await supabase.from("referral_codes").select("*").eq("user_id", user.id).single()
-  const { data: referralStats } = await supabase.from("referral_conversions").select("*").eq("referrer_id", user.id)
-  const { data: referralPayouts } = await supabase
+  const { data: profile, error: profileError } = await supabase
+    .from("user_profiles")
+    .select("*, tenants(*)")
+    .eq("id", user.id)
+    .single()
+
+  if (profileError) {
+    console.error("Error loading profile:", profileError)
+  }
+
+  const { data: referralCode, error: codeError } = await supabase
+    .from("referral_codes")
+    .select("*")
+    .eq("user_id", user.id)
+    .single()
+
+  if (codeError && codeError.code !== "PGRST116") {
+    console.error("Error loading referral code:", codeError)
+  }
+
+  const { data: referralStats, error: statsError } = await supabase
+    .from("referral_conversions")
+    .select("*")
+    .eq("referrer_id", user.id)
+
+  if (statsError) {
+    console.error("Error loading referral stats:", statsError)
+  }
+
+  const { data: referralPayouts, error: payoutsError } = await supabase
     .from("referral_payouts")
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(10)
+
+  if (payoutsError) {
+    console.error("Error loading referral payouts:", payoutsError)
+  }
 
   const totalClicks = referralStats?.length || 0
   const totalRegistrations = referralStats?.filter((s) => s.status === "registered" || s.status === "paid").length || 0

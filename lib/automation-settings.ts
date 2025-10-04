@@ -9,40 +9,71 @@ export interface AutomationSettings {
 }
 
 export async function getAutomationSettings(tenantId: string): Promise<AutomationSettings> {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase.from("automation_settings").select("*").eq("tenant_id", tenantId).single()
-
-  if (error || !data) {
-    // Return default settings if not found
-    return {
-      enabled: true,
-      ai_agent_enabled: true,
-      chatbot_enabled: true,
-      notifications_enabled: true,
-      updated_at: new Date().toISOString(),
-    }
+  if (!tenantId) {
+    throw new Error("Tenant ID is required")
   }
 
-  return data
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase.from("automation_settings").select("*").eq("tenant_id", tenantId).single()
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        // Not found - return defaults
+        console.log(`No automation settings for tenant ${tenantId}, using defaults`)
+        return {
+          enabled: true,
+          ai_agent_enabled: true,
+          chatbot_enabled: true,
+          notifications_enabled: true,
+          updated_at: new Date().toISOString(),
+        }
+      }
+      // Real error - throw it
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error("Error fetching automation settings:", error)
+    throw error
+  }
 }
 
 export async function updateAutomationSettings(
   tenantId: string,
   settings: Partial<AutomationSettings>,
 ): Promise<boolean> {
-  const supabase = await createClient()
+  if (!tenantId) {
+    throw new Error("Tenant ID is required")
+  }
 
-  const { error } = await supabase
-    .from("automation_settings")
-    .upsert({
-      tenant_id: tenantId,
-      ...settings,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("tenant_id", tenantId)
+  try {
+    const supabase = await createClient()
 
-  return !error
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) {
+      throw new Error("Unauthorized")
+    }
+
+    const { error } = await supabase
+      .from("automation_settings")
+      .upsert({
+        tenant_id: tenantId,
+        ...settings,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("tenant_id", tenantId)
+
+    if (error) throw error
+    return true
+  } catch (error) {
+    console.error("Error updating automation settings:", error)
+    throw error
+  }
 }
 
 export async function isAutomationEnabled(tenantId: string): Promise<boolean> {

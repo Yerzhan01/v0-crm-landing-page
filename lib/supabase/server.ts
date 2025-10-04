@@ -32,3 +32,5 @@ export async function createClient() {
 }
 
 export const supabaseClient = createClient
+
+export { createClient as createServerClient }

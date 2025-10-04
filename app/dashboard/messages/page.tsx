@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { MessagesPageContent } from "@/components/messages-page-content"
+import { getUserProfile } from "@/lib/supabase/helpers"
 
 export default async function MessagesPage() {
   const supabase = await createClient()
@@ -13,13 +14,25 @@ export default async function MessagesPage() {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("user_profiles").select("tenant_id").eq("id", user.id).single()
+  const profile = await getUserProfile(supabase, user.id)
 
-  const { data: conversations } = await supabase
+  if (!profile?.tenant_id) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-muted-foreground">Unable to load profile data</p>
+      </div>
+    )
+  }
+
+  const { data: conversations, error } = await supabase
     .from("conversations")
     .select("*, clients(*)")
-    .eq("tenant_id", profile?.tenant_id)
+    .eq("tenant_id", profile.tenant_id)
     .order("last_message_at", { ascending: false, nullsFirst: false })
+
+  if (error) {
+    console.error("Error loading conversations:", error)
+  }
 
   const mockConversations = [
     {

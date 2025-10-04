@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { ClientsList } from "@/components/clients-list"
+import { getUserProfile } from "@/lib/supabase/helpers"
 
 export default async function ClientsPage() {
   const supabase = await createClient()
@@ -13,13 +14,25 @@ export default async function ClientsPage() {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("user_profiles").select("tenant_id").eq("id", user.id).single()
+  const profile = await getUserProfile(supabase, user.id)
 
-  const { data: clients } = await supabase
+  if (!profile?.tenant_id) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-muted-foreground">Unable to load profile data</p>
+      </div>
+    )
+  }
+
+  const { data: clients, error } = await supabase
     .from("clients")
     .select("*")
-    .eq("tenant_id", profile?.tenant_id)
+    .eq("tenant_id", profile.tenant_id)
     .order("created_at", { ascending: false })
+
+  if (error) {
+    console.error("Error loading clients:", error)
+  }
 
   return <ClientsList clients={clients || []} />
 }

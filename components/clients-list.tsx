@@ -14,7 +14,7 @@ interface ClientsListProps {
 }
 
 export function ClientsList({ clients }: ClientsListProps) {
-  const { t } = useDashboardTranslation()
+  const { t, locale } = useDashboardTranslation()
 
   const getSourceBadge = (source: string) => {
     const variants: Record<string, string> = {
@@ -99,7 +99,7 @@ export function ClientsList({ clients }: ClientsListProps) {
                         )}
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <Calendar className="h-3 w-3" />
-                          <span>{new Date(client.created_at).toLocaleDateString("ru-RU")}</span>
+                          <span>{new Date(client.created_at).toLocaleDateString(locale)}</span>
                         </div>
                       </div>
                     </div>

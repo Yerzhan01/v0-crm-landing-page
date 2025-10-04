@@ -15,7 +15,7 @@ interface ReferralsContentProps {
 }
 
 export function ReferralsContent({ profile, referralCode, referrals }: ReferralsContentProps) {
-  const { t } = useDashboardTranslation()
+  const { t, locale } = useDashboardTranslation()
   const [copied, setCopied] = useState(false)
 
   const referralLink = referralCode
@@ -125,7 +125,7 @@ export function ReferralsContent({ profile, referralCode, referrals }: Referrals
                     <p className="text-sm text-muted-foreground">{referral.referred_email}</p>
                     <p className="text-xs text-muted-foreground">
                       {t.referralDate}:{" "}
-                      {new Date(referral.registered_at || referral.created_at).toLocaleDateString("ru-RU")}
+                      {new Date(referral.registered_at || referral.created_at).toLocaleDateString(locale)}
                     </p>
                   </div>
                   <Badge variant={referral.status === "paid" ? "default" : "secondary"}>
